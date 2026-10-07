@@ -15,8 +15,8 @@ for (const [width, height] of [[900, 240], [1920, 1080], [360, 640]]) {
     const viewport = renderer.layout.animationViewport, bounds = viewport.bounds;
     assert.ok(bounds.x <= 0 && bounds.y <= 0);
     assert.ok(bounds.x + bounds.width >= width && bounds.y + bounds.height >= height);
-    assert.equal(viewport.cellW, 5.1 * renderer.layout.logoScale);
-    assert.equal(viewport.cellH, 5 * renderer.layout.logoScale);
+    assert.equal(viewport.cellW, renderer.layout.baseWidth / 81);
+    assert.equal(viewport.cellH, renderer.layout.logoHeight / 19);
     const occupied = await renderer.page.evaluate(() => {
       window.renderFrame(50, false);
       const canvas = document.querySelector('canvas'), data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;

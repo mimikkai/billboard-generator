@@ -18,7 +18,7 @@ export async function createCampaignAnimation(config, layout, artwork, ctx) {
   const effectX = attachment(layout, 0).x - padX * cellW;
   const { originY: effectY, splitRow, mapY } = effectMapping(layout, padTop, rows);
   const sparks = createIndependentSparks(sim.primary.frames, sim.secondary.frames, columns, rows, cellW, cellH, effectX, effectY,
-    { width, height, scale: layout.logoHeight / 144, mapY, floorY: layout.floorY });
+    { width, height, scale: layout.logoHeight / (144 * layout.unit), mapY, floorY: layout.floorY });
   const native = document.createElement('canvas'); native.width = columns * 10; native.height = rows * 20;
   const nativeCtx = native.getContext('2d', { willReadFrequently: true });
   const nativeLayout = { cellWidth: 10, cellHeight: 20, fontSize: 17, cssWidth: native.width, cssHeight: native.height };

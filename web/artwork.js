@@ -1,6 +1,6 @@
 function rasterize(rectangles, theme, scale, width, height) {
   const canvas = document.createElement('canvas');
-  canvas.width = Math.ceil(width * scale); canvas.height = Math.ceil(height * scale);
+  canvas.width = Math.ceil(width * scale - 1e-9); canvas.height = Math.ceil(height * scale - 1e-9);
   const ctx = canvas.getContext('2d'), gradient = ctx.createLinearGradient(0, 0, 0, height * scale);
   for (const band of theme.gradient) {
     gradient.addColorStop(band.from / 100, band.color); gradient.addColorStop(band.to / 100, band.color);

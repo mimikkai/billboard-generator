@@ -23,27 +23,24 @@
     },
     {
       "file": "assets/runtime/logo.txt",
-      "sha256": "c9f1681511bf4315e97e8d956eadf72695456fcfd2d028598bed3964d63110e1",
-      "modified": false,
-      "rights": "Redistributed with permission; third-party rights are not replaced by the project license."
+      "sha256": "135ab5789df5622e1bcd2c58793ce76ab2cf34c1dfdd14f2e61913f07b5a0d22",
+      "modified": true,
+      "rights": "Derived from MimikkAi brand assets supplied by the brand owner.",
+      "modification": "Replaced the Omarchy ASCII wordmark with an 81×10 decomposition of the MimikkAi logo, preserving grid dimensions."
     },
     {
       "file": "assets/official-wordmark.svg",
-      "sha256": "be58c4b721a666f23fb9e756a39cbd62868c6717e36d4beed8fe8035bae54222",
-      "modified": false,
-      "rights": "Redistributed with permission; third-party rights are not replaced by the project license.",
-      "source": {
-        "repository": "omacom/omarchy-site",
-        "commit": "5f908e4a85b8a4594be73db725906cf656660823",
-        "path": "brand/omarchy-wordmark.svg",
-        "sha256": "be58c4b721a666f23fb9e756a39cbd62868c6717e36d4beed8fe8035bae54222"
-      }
+      "sha256": "e7450fd3aeaa5c28169355fd72fd0e7cc7019a9aab99ddf0729d2649ebae219a",
+      "modified": true,
+      "rights": "Derived from MimikkAi brand assets supplied by the brand owner.",
+      "modification": "Rect decomposition of the supplied MimikkAi logo SVG (M emblem + MimikkAi text); base width 413.1, height 83.98."
     },
     {
-      "file": "assets/Delta-Corps-Priest-1.flf",
-      "sha256": "5065f00aa615c5e2fa18e9f7871628cb0384e9d9154d1531096e3adc0d84d41f",
-      "modified": false,
-      "rights": "Redistributed with permission; third-party rights are not replaced by the project license."
+      "file": "assets/inter-suffix.json",
+      "sha256": "a2fc82985055f08aaef230b030acf74d418a371b62c2a0d7c627a3ba1f2ebbdf",
+      "modified": true,
+      "rights": "Letterforms derived from Inter (SIL Open Font License 1.1, rsms/inter); rect decomposition is generated locally.",
+      "modification": "Rect decomposition of Inter Bold glyphs (.RU letters, digits, hyphen) with cap height 190 px, per-glyph ink bounds and advances."
     },
     {
       "file": "web/independent-sparks.js",

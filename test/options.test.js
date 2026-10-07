@@ -11,9 +11,9 @@ import { combinationWarnings } from '../src/support.js';
 const snapshot = await loadSnapshot();
 const parse = args => parseOptions(args, snapshot);
 test('defaults are explicit and suffix, language and theme are independent', () => {
-  assert.deepEqual(parse([]), { command: 'render', tld: '.ORG', language: 'en', theme: 'astral', animation: 'laseretch-campaign', background: 'theme', width: 900, height: 240, duration: 15, output: 'omarchy.mp4', force: false });
-  assert.equal(parse(['--tld', '.dk']).language, 'en');
-  assert.equal(parse(['--language', 'da']).tld, '.ORG');
+  assert.deepEqual(parse([]), { command: 'render', tld: '.RU', language: 'en', tagline: undefined, theme: 'astral', animation: 'laseretch-campaign', background: 'theme', width: 900, height: 240, duration: 15, output: 'mimikkai.mp4', force: false });
+  assert.equal(parse(['--tld', 'ru']).language, 'en');
+  assert.equal(parse(['--language', 'da']).tld, '.RU');
   for (const tld of ['dk', '.org', '.COM', '.de']) assert.equal(parse(['--tld', tld]).tld, '.' + tld.replace(/^\./, '').toUpperCase());
   for (const resolution of ['900x240', '900x480', '1920x1080']) assert.equal(parse(['--resolution', resolution]).height, Number(resolution.split('x')[1]));
 });

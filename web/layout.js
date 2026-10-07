@@ -63,7 +63,7 @@ export function calculateLayout(ctx, config) {
     const ascent = Math.max(...metrics.map(m => m.actualBoundingBoxAscent));
     const descent = Math.max(...metrics.map(m => m.actualBoundingBoxDescent));
     const lineHeight = fontSize * tallestLineFactor;
-    const gap = Math.max(16 * unit, 55 * unit - ascent);
+    const gap = Math.max(10 * unit, 34 * unit - ascent);
     return { metrics, ascent, descent, lineHeight, gap,
       groupHeight: wordmark.height * logoScale + gap + ascent + descent + (lines.length - 1) * lineHeight };
   }

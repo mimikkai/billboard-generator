@@ -21,5 +21,7 @@ export async function prepareRenderConfig(options, snapshot) {
   const theme = renderTheme(options, snapshot);
   if (!locale || !theme) throw Error('Language and theme must exist in the available catalog.');
   const font = await checkFonts(locale);
-  return { ...options, duration: timeline.duration, timeline, animation: animationById(options.animation), locale, theme, font, commit: snapshot.commit, wordmark: await buildWordmark(options.tld) };
+  // MimikkAi brand: the editable tagline overrides the snapshot copy.
+  const wording = typeof options.tagline === 'string' && options.tagline.trim() ? options.tagline.trim() : locale.tagline;
+  return { ...options, duration: timeline.duration, timeline, animation: animationById(options.animation), locale: { ...locale, tagline: wording, headline: wording, attribution: '' }, theme, font, commit: snapshot.commit, wordmark: await buildWordmark(options.tld) };
 }

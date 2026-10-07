@@ -8,7 +8,7 @@ const argumentOptions = {
   help: { type: 'boolean', short: 'h' },
   'list-themes': { type: 'boolean' }, 'list-languages': { type: 'boolean' }, 'list-animations': { type: 'boolean' },
   animation: { type: 'string' }, duration: { type: 'string' }, 'theme-file': { type: 'string' },
-  tld: { type: 'string' }, language: { type: 'string' }, theme: { type: 'string' },
+  tld: { type: 'string' }, language: { type: 'string' }, theme: { type: 'string' }, tagline: { type: 'string' },
   background: { type: 'string' }, resolution: { type: 'string' }, output: { type: 'string' }, force: { type: 'boolean' }, revision: { type: 'string' },
 };
 function commandName(values, positionals) {
@@ -58,10 +58,12 @@ function outputPath(output) {
   return output;
 }
 function renderOptions(values, snapshot) {
-  const defaults = { tld: '.org', language: 'en', background: 'theme', resolution: '900x240', output: 'omarchy.mp4', force: false };
+  const defaults = { tld: '.ru', language: 'en', background: 'theme', resolution: '900x240', output: 'mimikkai.mp4', force: false };
   const selected = { ...defaults, ...values };
+  const tagline = typeof selected.tagline === 'string' && selected.tagline.trim() ? selected.tagline.trim() : undefined;
+  if (typeof values.tagline === 'string' && values.tagline.includes('\0')) throw Error('Tagline contains invalid characters.');
   return {
-    command: 'render', tld: normalizeSuffix(selected.tld), language: languageId(selected.language, snapshot),
+    command: 'render', tld: normalizeSuffix(selected.tld), language: languageId(selected.language, snapshot), tagline,
     ...themeSelection(values, snapshot), animation: animationById(selected.animation).id, background: backgroundId(selected.background),
     ...dimensions(selected.resolution), duration: durationSeconds(selected.duration), output: outputPath(selected.output), force: selected.force,
   };

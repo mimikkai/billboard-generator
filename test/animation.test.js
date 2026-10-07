@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { buildWordmark, fontGlyph } from '../src/wordmark.js';
+import { buildWordmark } from '../src/wordmark.js';
 import { createSimulation } from '../web/simulation.js';
 import { createIndependentSparks } from '../web/independent-sparks.js';
 import { attachment } from '../web/layout.js';
@@ -9,22 +9,19 @@ import { checkFonts } from '../src/render.js';
 import { loadSnapshot } from '../src/snapshot.js';
 import { combinationWarnings } from '../src/support.js';
 
-test('official geometry is invariant and suffixes retain block anatomy', async () => {
-  const marks = await Promise.all(['.DK', '.ORG', '.COM', '.DE', '.DEV', '.CO.UK', '.123', '.XN--FIQS8S', '.ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(buildWordmark));
+test('official geometry is invariant and suffixes keep letter advances', async () => {
+  const marks = await Promise.all(['.DK', '.ORG', '.COM', '.RU', '.DEV', '.CO.UK', '.123', '.XN--FIQS8S', '.ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(buildWordmark));
   for (const mark of marks) {
-    assert.equal(mark.base.length, 211);
     assert.deepEqual(mark.base, marks[0].base);
     assert.equal(mark.baseWidth, 413.1);
-    assert.equal(mark.height, 95);
+    assert.equal(mark.height, 83.98);
     assert.ok(mark.suffix.every(r => r.x > mark.baseWidth && r.y >= 0 && r.y + r.height <= mark.height));
-    assert.ok(mark.glyphs.every(g => !g.rows || g.rows.length === 9));
+    assert.ok(mark.glyphs.every(g => g.width > 0));
   }
-  assert.equal(marks[0].fullWidth, 561);
-  assert.ok(marks[1].fullWidth > marks[0].fullWidth);
-  assert.ok(marks[2].fullWidth > marks[1].fullWidth);
-  const font = await readFile(new URL('../assets/Delta-Corps-Priest-1.flf', import.meta.url), 'utf8');
-  assert.equal(fontGlyph(font, 'D')[0].trim(), '███████▄');
-  assert.ok(fontGlyph(font, 'K').some(r => r.includes('▐')));
+  const dot = marks[3];
+  assert.ok(dot.glyphs[0].width < dot.glyphs[1].width, 'Dot is narrower than letters.');
+  assert.ok(marks[1].fullWidth < marks[2].fullWidth);
+  assert.ok(marks[2].fullWidth < marks.at(-1).fullWidth);
   await assert.rejects(buildWordmark('.<svg>'), /Invalid/);
 });
 
@@ -51,10 +48,10 @@ test('native reference simulation and irregular pile regression', async () => {
   const m = sparks.metadata;
   assert.ok(m.differentAirborneFrames >= 100);
   assert.ok(m.groundEvents.every(e => e.extendedFrames === e.nativeFrames * 4));
-  assert.equal(m.piles.landings, 772);
-  assert.equal(m.piles.stackedLandings, 660);
-  assert.equal(m.piles.lastVisibleFrame, 161);
-  assert.ok(Math.abs(m.piles.peakStackRise - 29.9) < .15);
+  assert.equal(m.piles.landings, 629);
+  assert.equal(m.piles.stackedLandings, 524);
+  assert.equal(m.piles.lastVisibleFrame, 168);
+  assert.ok(Math.abs(m.piles.peakStackRise - 26.11) < .15);
   assert.deepEqual(m.piles.settleTickFrames, [2, 5]);
 });
 

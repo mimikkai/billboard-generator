@@ -22,7 +22,7 @@ test('intro fits both canvas dimensions, keeps official proportions and lands on
     for (const suffix of ['.DK', '.CO.UK', '.ABCDEFGHIJKLMNOPQRSTUVWXYZ']) {
       const l = await layout(width, height, suffix), large = largePose(l), small = finalPose(l);
       assert.ok(large.width >= small.width - 1e-8);
-      near(large.width / large.height, 413.1 / 95);
+      near(large.width / large.height, 413.1 / 83.98);
       assert.ok(large.x >= 0 && large.y >= 0);
       assert.ok(large.x + large.width <= width + .5 && large.y + large.height <= height + .5);
       assert.ok(Math.abs(large.x + large.width / 2 - width / 2) <= .5);
@@ -34,7 +34,7 @@ test('intro fits both canvas dimensions, keeps official proportions and lands on
       for (let frame = 0; frame <= 125; frame++) {
         const pose = introPose(l, frame / 25);
         assert.ok(pose.width <= previous + 1e-8);
-        near(pose.width / pose.height, 413.1 / 95);
+        near(pose.width / pose.height, 413.1 / 83.98);
         previous = pose.width;
       }
     }
@@ -97,7 +97,7 @@ test('moving artwork is directly rasterized with a one-pose cache and no oversiz
   const artwork = createArtwork({ wordmark, theme: { gradient: [{ from: 0, to: 100, color: '#abcdef' }] } }, l);
   const pose = largePose(l), moving = artwork.atPose(pose);
   assert.equal(moving.width, Math.ceil(pose.width));
-  assert.equal(moving.rectangles.length, 211);
+  assert.equal(moving.rectangles.length, wordmark.base.length);
   assert.equal(artwork.atPose(pose), moving);
   assert.equal(artwork.atPose(finalPose(l)), artwork.base);
   assert.equal(allocated.length, 3);

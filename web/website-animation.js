@@ -4,7 +4,7 @@ import { introFrame, introPose, introProgress, introMapping, mappedBox } from '.
 import { referenceFrame, phaseById } from './timeline.js';
 
 function cellBox(index, frame, offset, layout, mapping) {
-  const cellW = 5.1 * layout.logoScale, cellH = 5 * layout.logoScale;
+  const cellW = layout.cellW, cellH = layout.logoHeight / 19;
   const left = Math.round((layout.width - layout.baseWidth) / 2) + (index % frame.width - offset.x) * cellW;
   const top = layout.top + (Math.floor(index / frame.width) - offset.y) * cellH;
   return mappedBox(mapping, left, top, cellW, cellH);

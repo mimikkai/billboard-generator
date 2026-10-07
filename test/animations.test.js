@@ -33,11 +33,12 @@ test('pinned website animation assets match provenance and bitmap matches offici
     const hash = createHash('sha256').update(await readFile(new URL(file.file, root))).digest('hex');
     assert.equal(hash, file.sha256, file.file);
   }
-  const bitmap = JSON.parse(await readFile(new URL('bitmap.json', root))), { base } = await buildWordmark('.ORG');
+  const bitmap = JSON.parse(await readFile(new URL('bitmap.json', root))), mark = await buildWordmark('.ORG');
   assert.equal(bitmap.rows.length, bitmap.height);
+  const cellW = mark.baseWidth / 81, cellH = mark.height / 19;
   for (let y = 0; y < bitmap.height; y++) for (let x = 0; x < bitmap.width; x++) {
-    const px = (x + .5) * 5.1, py = (y + .5) * 5;
-    const occupied = base.some(r => px >= r.x && px < r.x + r.width && py >= r.y && py < r.y + r.height);
+    const px = (x + .5) * cellW, py = (y + .5) * cellH;
+    const occupied = mark.base.some(r => px >= r.x && px < r.x + r.width && py >= r.y && py < r.y + r.height);
     assert.equal(bitmap.rows[y][x] === '1', occupied, `Bitmap ${x},${y}`);
   }
   assert.equal(weightOf('.'.codePointAt(0)), .12); assert.equal(weightOf('@'.codePointAt(0)), .7);

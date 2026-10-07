@@ -8,7 +8,7 @@
 </head>
 <body>
   <header class="app-header">
-    <div class="identity"><img src="/app/icon.svg" alt="" width="38" height="38"><div><h1>Billboard Generator</h1><p>OMARCHY / COMMUNITY EDITION</p></div></div>
+    <div class="identity"><img src="/app/icon.svg" alt="" width="38" height="38"><div><h1>Billboard Generator</h1><p>MIMIKKAI</p></div></div>
     <div class="header-actions"><button id="sync" class="quiet">Sync website data</button></div>
   </header>
   <main>
@@ -17,9 +17,9 @@
         <fieldset id="settings">
           <legend>01 / COMPOSITION</legend>
           <label for="tld">Domain suffix</label>
-          <div class="domain-field"><span>OMARCHY</span><input id="tld" name="tld" value=".org" autocomplete="off" spellcheck="false"></div>
+          <div class="domain-field"><span>MIMIKKAI</span><input id="tld" name="tld" value=".ru" autocomplete="off" spellcheck="false"></div>
           <label for="language">Tagline language</label><select id="language" name="language"></select>
-          <p id="tagline-copy" class="tagline-copy"></p>
+          <label for="tagline">Tagline text</label><input id="tagline" name="tagline" value="Один промпт — один агент" autocomplete="off" spellcheck="false" maxlength="120">
           <label for="theme">Billboard theme</label><select id="theme" name="theme"></select>
           <button id="import-theme" class="quiet" type="button">Import theme</button>
           <input id="theme-file" type="file" accept=".json,application/json" aria-label="Import a JSON theme file" hidden>

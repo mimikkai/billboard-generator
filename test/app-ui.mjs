@@ -208,16 +208,16 @@ try {
     finally { await cli.close(); }
   }
   report.checks.push('Theme, white and black backgrounds have exact preview pixels and match CLI frames.');
-  for (const [theme, bands, cursor] of [['astral', 10, [125, 207, 255]], ['danish-dynamite', 5, [246, 133, 134]]]) {
+  for (const [theme, bands, cursor] of [['astral', 10, [0, 209, 255]], ['danish-dynamite', 5, [236, 5, 24]]]) {
     await page.locator('#theme').selectOption(theme);
     await page.waitForFunction(id => !document.getElementById('export').disabled && document.querySelector('#preview-mount iframe')?.contentWindow.layout?.settings.theme === id, theme);
     assert.equal(await page.locator('#palette span').count(), bands + 1);
     const frame = page.frames().find(frame => frame.url().includes('/web/index.html'));
+    // Tagline is not rendered for MimikkAi branding; verify a settled gradient band instead.
     const actualCursor = await frame.evaluate(() => {
-      window.renderFrame(175, false);
-      const layout = window.layout, line = layout.lines.at(-1);
-      const x = Math.round((layout.width + line.width) / 2 + layout.cursorGap) + Math.floor(layout.cursorWidth / 2);
-      const y = Math.ceil(line.y - layout.ascent) + 1;
+      window.renderFrame(300, false);
+      const layout = window.layout;
+      const x = Math.round((layout.width - layout.baseWidth) / 2) + 5, y = Math.round(layout.top + layout.logoHeight / 2);
       return [...document.querySelector('canvas').getContext('2d').getImageData(x, y, 1, 1).data].slice(0, 3);
     });
     assert.deepEqual(actualCursor, cursor);

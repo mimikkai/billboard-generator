@@ -22,10 +22,10 @@ test('campaign palettes preserve original colors, stops and provenance without c
     assert.equal(theme.background, '#000000'); assert.equal(theme.origin, 'campaign');
     assert.equal(theme.provenance.sha256, '55f2af668864c5fa36f6fd5eace0ee61f5f0abdf93ab3145a625a7c134a091b4');
     const options = parseOptions(['--theme', theme.id, '--background', 'white'], snapshot);
-    assert.equal(options.language, 'en'); assert.equal(options.tld, '.ORG');
+    assert.equal(options.language, 'en'); assert.equal(options.tld, '.RU');
     const config = await prepareRenderConfig(options, snapshot);
     assert.equal(config.theme.background, '#ffffff'); assert.deepEqual(config.theme.gradient, theme.gradient);
-    assert.equal(config.theme.cursor, theme.cursor); assert.equal(config.locale.tagline, snapshot.languages.find(l => l.id === 'en').tagline);
+    assert.equal(config.theme.cursor, theme.cursor); assert.equal(config.locale.tagline, 'Один промпт — один агент');
   }
   assert.equal(astral.brand, '#89b4fa'); assert.equal(astral.cursor, '#7dcfff');
   assert.equal(danish.brand, '#ffffff'); assert.equal(danish.cursor, '#f68586');

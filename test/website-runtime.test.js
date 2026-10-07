@@ -8,6 +8,7 @@ test('every pinned website effect settles with multi-color and single-color pale
   await initialize({ module_or_path: await readFile(new URL('../assets/website-etch/all.wasm', import.meta.url)) });
   const bitmap = JSON.parse(await readFile(new URL('../assets/website-etch/bitmap.json', import.meta.url)));
   const blank = ' '.repeat(93);
+  const anchorCol = bitmap.rows[bitmap.rows.findIndex(row => row.includes('1'))].indexOf('1');
   const text = [...Array(4).fill(blank), ...bitmap.rows.map(row => '      ' + row.replaceAll('0', ' ').replaceAll('1', '█') + '      '), ...Array(4).fill(blank)].join('\n');
   for (const palette of ['#82fb9c,#a8fcba,#d0fdd9', '#334455']) for (const animation of animations.filter(a => a.origin === 'website')) {
     const session = new Session(text, animation.id, 93, 27, 42, animation.stepsPerSecond, palette, null);
@@ -16,7 +17,7 @@ test('every pinned website effect settles with multi-color and single-color pale
       while (session.step()) assert.ok(++steps <= 100000, animation.id);
       const width = session.width(), n = width * session.height(), symbols = new Uint32Array(n), flags = new Uint8Array(n);
       session.fill(symbols, new Uint32Array(n), new Uint32Array(n), flags);
-      const first = symbols.indexOf(0x2588), dx = first % width - 17, dy = Math.floor(first / width);
+      const first = symbols.indexOf(0x2588), dx = first % width - anchorCol, dy = Math.floor(first / width);
       assert.ok(first >= 0, animation.id);
       for (let y = 0; y < bitmap.height; y++) for (let x = 0; x < bitmap.width; x++) {
         const i = (y + dy) * width + x + dx;

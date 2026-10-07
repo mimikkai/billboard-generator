@@ -3,15 +3,13 @@ import assert from 'node:assert/strict';
 import { mkdtemp, readFile, writeFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { loadSnapshot, validateSnapshot, extractSnapshot, syncSnapshot, atomicSnapshot, INITIAL_COMMIT, TAGLINE } from '../src/snapshot.js';
+import { loadSnapshot, validateSnapshot, extractSnapshot, syncSnapshot, atomicSnapshot, INITIAL_COMMIT } from '../src/snapshot.js';
 
 const fixture = {
   'src/lib/site-themes.ts': "export const SITE_THEMES: SiteTheme[] = [\n  { id: 'test', name: 'Test', light: true },\n]",
   'src/styles.css': "[data-theme='test'] { --t-bg: #ffffff; --t-brand: #111111; --t-field-crest: #222222; --t-field-dim: #aaaaaa; }",
   'src/lib/brand-downloads.ts': "const colors = ['crest', 'dim'].map((band) => style.getPropertyValue(`--t-field-${band}`).trim(), )\nconst boundaries = [0, 26.316, 100]",
   'src/i18n/locales.json': JSON.stringify({ en: { name: 'English' }, da: { name: 'Dansk' } }),
-  'src/i18n/messages/en.json': '{}',
-  'src/i18n/messages/da.json': JSON.stringify({ [TAGLINE]: 'Smukt, sjovt Linux med agenter', by: 'fra' }),
 };
 
 test('bundled snapshot preserves upstream copy, light flags and unequal bands', async () => {
@@ -19,10 +17,7 @@ test('bundled snapshot preserves upstream copy, light flags and unequal bands', 
   assert.equal(s.commit, INITIAL_COMMIT);
   assert.equal(s.themes.length, 22);
   assert.equal(s.languages.length, 31);
-  assert.equal(s.languages.find(l => l.id === 'en').tagline, `${TAGLINE} by DHH`);
-  assert.equal(s.languages.find(l => l.id === 'da').tagline, 'Smukt, sjovt Linux med agenter fra DHH');
-  assert.equal(s.languages.find(l => l.id === 'zh-CN').attribution, '由 DHH 亲自打造');
-  assert.equal(s.languages.find(l => l.id === 'ar').attribution, 'من إعداد DHH');
+  for (const l of s.languages) assert.equal(l.tagline, 'Один промпт — один агент');
   assert.equal(s.languages.find(l => l.id === 'ar').direction, 'rtl');
   assert.equal(s.themes.find(t => t.id === 'white').light, true);
   const h = s.themes.find(t => t.id === 'hackerman');
@@ -34,12 +29,12 @@ test('bundled snapshot preserves upstream copy, light flags and unequal bands', 
 
 test('adapter reads data without executing TypeScript and rejects schema drift', async () => {
   const s = await extractSnapshot(INITIAL_COMMIT, async p => fixture[p]);
-  assert.equal(s.languages[0].tagline, `${TAGLINE} by DHH`);
+  assert.equal(s.languages[0].tagline, 'Один промпт — один агент');
+  assert.equal(s.languages.find(l => l.id === 'da').direction, 'ltr');
   for (const [path, replacement, diagnostic] of [
     ['src/lib/site-themes.ts', fixture['src/lib/site-themes.ts'].replace("light: true", 'light: compute()'), /schema/],
     ['src/styles.css', fixture['src/styles.css'].replace('#ffffff', 'var(--other)'), /color/],
-    ['src/i18n/messages/da.json', '{}', /Missing website tagline/],
-    ['src/i18n/messages/da.json', JSON.stringify({ [TAGLINE]: 'Headline' }), /Missing website attribution/],
+    ['src/i18n/locales.json', JSON.stringify({ eu: { name: ' ' } }), /Unsupported locale/],
     ['src/lib/brand-downloads.ts', fixture['src/lib/brand-downloads.ts'].replace('26.316', '101'), /gradient/i],
   ]) await assert.rejects(extractSnapshot(INITIAL_COMMIT, async p => p === path ? replacement : fixture[p]), diagnostic);
 });
@@ -69,20 +64,6 @@ test('sync pins every source to one resolved commit and replaces atomically', as
   } }), /conflicts/);
   assert.deepEqual(await readFile(path), before);
   assert.deepEqual(await readdir(directory), ['snapshot.json']);
-});
-
-test('legacy pinned snapshots gain verified attribution in memory without changing cached files', async t => {
-  const directory = await mkdtemp(join(tmpdir(), 'snapshot-migration-'));
-  t.after(() => rm(directory, { recursive: true, force: true }));
-  const snapshot = await loadSnapshot(), legacy = structuredClone(snapshot);
-  legacy.schemaVersion = 1;
-  legacy.languages = legacy.languages.map(({ headline, attribution, ...locale }) => ({ ...locale, tagline: headline }));
-  const path = join(directory, 'old.json'), original = JSON.stringify(legacy);
-  await writeFile(path, original);
-  assert.deepEqual((await loadSnapshot(path)).languages, snapshot.languages);
-  assert.equal(await readFile(path, 'utf8'), original);
-  legacy.commit = 'a'.repeat(40); await writeFile(path, JSON.stringify(legacy));
-  await assert.rejects(loadSnapshot(path), /Legacy snapshot lacks attribution/);
 });
 
 test('snapshot validation rejects corrupt data', async () => {

@@ -1,12 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { create } from 'fontkit';
 
-const scripts = {
-  ja: ['Noto Sans JP', 'NotoSansJP.ttf'], 'zh-CN': ['Noto Sans SC', 'NotoSansSC.ttf'],
-  ko: ['Noto Sans KR', 'NotoSansKR.ttf'], ar: ['Noto Sans Arabic', 'NotoSansArabic.ttf'], ur: ['Noto Sans Arabic', 'NotoSansArabic.ttf'],
-  hi: ['Noto Sans Devanagari', 'NotoSansDevanagari.ttf'], bn: ['Noto Sans Bengali', 'NotoSansBengali.ttf'],
-  si: ['Noto Sans Sinhala', 'NotoSansSinhala.ttf'], ta: ['Noto Sans Tamil', 'NotoSansTamil.ttf'], th: ['Noto Sans Thai', 'NotoSansThai.ttf'],
-};
 const fonts = new Map();
 async function load(name) {
   if (!fonts.has(name)) {
@@ -28,7 +22,8 @@ async function checkSparkFonts() {
 function lineHeight(locale) { return locale.direction === 'rtl' || ['hi', 'bn', 'si', 'ta', 'th'].includes(locale.id) ? 1.65 : 1.35; }
 export async function checkFonts(locale) {
   await checkSparkFonts();
-  const candidates = scripts[locale.id] ? [scripts[locale.id]] : [
+  // MimikkAi tagline is fixed Cyrillic copy; language only steers direction.
+  const candidates = [
     ['JetBrains Mono', 'JetBrainsMono-Bold.woff2'], ['Noto Sans', 'NotoSans.ttf'],
   ];
   let missing;

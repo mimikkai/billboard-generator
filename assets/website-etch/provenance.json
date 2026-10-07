@@ -20,8 +20,8 @@
     {
       "file": "bitmap.json",
       "path": "src/data/wordmark-bitmap.ts",
-      "sha256": "e27c50a2c68f867524fa2c4975f4186cb408d029cf2feb299e323dcc1964cf34",
-      "transformation": "Data-only extraction of bitmap dimensions and binary rows"
+      "sha256": "4dd0754999ca7f2d278e61586a73ebc59465a0d876ee9d65a76c2954ef981020",
+      "transformation": "Replaced the Omarchy bitmap with an 81×19 decomposition of the supplied MimikkAi logo, preserving dimensions and binary row format"
     }
   ],
   "sources": [

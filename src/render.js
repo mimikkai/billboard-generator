@@ -70,7 +70,7 @@ async function encode(options, snapshot, prepared, resources, hooks) {
   progress(`Animation: ${renderer.layout.settings.animation}`);
   reportWarnings(renderer.layout.warnings, warn);
   const palette = renderTheme(options, snapshot), metadata = videoMetadata(options, snapshot, palette, renderer);
-  progress(`Rendering ${options.width}x${options.height}, ${options.theme}, ${options.language}, OMARCHY${options.tld}\nUpstream: ${snapshot.repository}@${snapshot.commit}`);
+  progress(`Rendering ${options.width}x${options.height}, ${options.theme}, ${options.language}, MimikkAi${options.tld}\nUpstream: ${snapshot.repository}@${snapshot.commit}`);
   resources.encoder = createEncoder(prepared.ffmpeg, encoderArgs(palette.background, metadata, prepared.temporary, renderer.layout.timeline.frameCount));
   await encodeFrames(renderer, resources.encoder, signal, progress);
   signal?.throwIfAborted();

@@ -29,7 +29,7 @@ function textOptions(body) {
   return args;
 }
 function previewOptions(body, snapshot, customThemes) {
-  fields(body, ['theme', 'animation', 'background', 'language', 'tld', 'width', 'height', 'duration']);
+  fields(body, ['theme', 'animation', 'background', 'language', 'tld', 'width', 'height', 'duration', 'tagline']);
   const width = body.width ?? 900, height = body.height ?? 240;
   if (![width, height].every(v => ['number', 'string'].includes(typeof v))) throw error(400, 'Dimensions must be numbers.');
   const custom = customThemes.get(body.theme);

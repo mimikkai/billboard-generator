@@ -34,7 +34,6 @@ function validateIndex(index, timeline) {
   if (!Number.isInteger(index) || index < 0 || index >= timeline.frameCount) throw Error(`Frame index must be between 0 and ${timeline.lastFrame}.`);
 }
 const cursorVisible = (p, elapsed) => p < 1 || ((elapsed % 1 + 1) % 1) < .5;
-
 async function initialize() {
   const config = await loadConfiguration(), { width, height, theme, locale } = config;
   const { canvas, ctx } = outputCanvas(width, height);
@@ -44,8 +43,7 @@ async function initialize() {
   const artwork = createArtwork(config, layout), { suffix } = artwork;
   const animation = await createAnimation(config, layout, artwork, ctx);
   const typing = phaseById(config.timeline, 'tagline'), typingEndFrame = typing.startFrame + typing.duration * 25;
-  const segmenter = new Intl.Segmenter(locale.id, { granularity: 'grapheme' });
-  const lines = layout.lines.map(line => ({ ...line, clusters: [...segmenter.segment(line.text)].map(s => s.segment) }));
+  const lines = layout.lines.map(line => ({ ...line, clusters: [...new Intl.Segmenter(locale.id, { granularity: 'grapheme' }).segment(line.text)].map(s => s.segment) }));
   const clusterCount = lines.reduce((n, line) => n + line.clusters.length, 0);
   function drawCursor(line, shown, start) {
     const advance = ctx.measureText(shown).width;

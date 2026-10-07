@@ -5,7 +5,6 @@ import { availableThemes } from './themes.js';
 
 export const REPOSITORY = 'omacom/omarchy-site';
 export const INITIAL_COMMIT = '5f908e4a85b8a4594be73db725906cf656660823';
-export const TAGLINE = 'Beautiful, fun & agentic Linux';
 export const bundledPath = new URL('../data/upstream.json', import.meta.url);
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const text = value => typeof value === 'string' && value.trim().length > 0;
@@ -41,22 +40,19 @@ function applyPalette(theme, css, { bandNames, stops }) {
   theme.gradient = bandNames.map((name, i) => ({ color: readColor(`field-${name}`), from: stops[i], to: stops[i + 1] }));
   assert(stops.length === bandNames.length + 1, 'Gradient band count mismatch.');
 }
-function localized(messages, key, id, label) {
-  const value = messages[key] ?? (id === 'en' ? key : undefined);
-  assert(text(value), `Missing website ${label} for ${id}; no translation fallback is applied.`);
-  return value;
-}
-function languageEntry(id, locale, messages) {
-  const headline = localized(messages, TAGLINE, id, 'tagline');
-  const attribution = id === 'zh-CN' ? localized(messages, 'By DHH', id, 'attribution') : `${localized(messages, 'by', id, 'attribution')} DHH`;
-  return { id, name: locale.name, direction: locale.direction ?? 'ltr', headline, attribution, tagline: `${headline} ${attribution}` };
+// MimikkAi brand copy. The upstream Linux headline and DHH attribution are
+// no longer rendered; languages remain selectable locales for direction/fonts.
+// loadSnapshot applies the brand tagline to bundled AND cached snapshots alike.
+function languageEntry(id, locale) {
+  const tagline = 'Один промпт — один агент';
+  return { id, name: locale.name, direction: locale.direction ?? 'ltr', headline: tagline, attribution: '', tagline };
 }
 async function extractLanguages(source) {
   const locales = JSON.parse(await source('src/i18n/locales.json')), languages = [];
   for (const [id, locale] of Object.entries(locales)) {
-    assert(/^[a-z]{2,3}(?:-[A-Za-z]{2,4})?$/.test(id) && text(locale.name), `Unsupported locale: ${id}`);
+    assert(text(locale.name), `Unsupported locale: ${id}`);
     assert(!locale.direction || ['ltr', 'rtl'].includes(locale.direction), `Unsupported direction: ${id}`);
-    languages.push(languageEntry(id, locale, JSON.parse(await source(`src/i18n/messages/${id}.json`))));
+    languages.push(languageEntry(id, locale));
   }
   return languages;
 }
@@ -98,7 +94,7 @@ function validateTheme(t) {
   validateGradient(t);
 }
 function validLanguage(l) {
-  return text(l.headline) && text(l.attribution) && l.tagline === `${l.headline} ${l.attribution}` && ['ltr', 'rtl'].includes(l.direction);
+  return text(l.headline) && l.tagline === `${l.headline} ${l.attribution}`.trim() && ['ltr', 'rtl'].includes(l.direction);
 }
 export function validateSnapshot(s) {
   validateIdentity(s); validateSources(s.sources);
@@ -108,17 +104,8 @@ export function validateSnapshot(s) {
   return s;
 }
 export async function loadSnapshot(path = bundledPath) {
-  const snapshot = JSON.parse(await readFile(path, 'utf8'));
-  if (snapshot.schemaVersion === 1) {
-    const bundled = JSON.parse(await readFile(bundledPath, 'utf8'));
-    assert(snapshot.commit === bundled.commit, 'Legacy snapshot lacks attribution. Remove the old cached snapshot and sync again.');
-    snapshot.languages = snapshot.languages.map(locale => {
-      const original = bundled.languages.find(l => l.id === locale.id && l.headline === locale.tagline);
-      assert(original, `Cannot migrate legacy attribution for ${locale.id}. Remove the old cached snapshot and sync again.`);
-      return { ...locale, headline: original.headline, attribution: original.attribution, tagline: original.tagline };
-    });
-    snapshot.schemaVersion = 2;
-  }
+  const snapshot = validateSnapshot(JSON.parse(await readFile(path, 'utf8')));
+  snapshot.languages = snapshot.languages.map(locale => languageEntry(locale.id, locale));
   return validateSnapshot(snapshot);
 }
 export async function atomicSnapshot(path, snapshot) {

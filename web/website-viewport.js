@@ -6,7 +6,7 @@ export const WEBSITE_CELL_LIMIT = 200000;
 // center to leave room for the tagline. Cover both canvas edges from the logo,
 // retaining native cell size. A small overscan absorbs engine anchor rounding.
 export function websiteViewport(layout, bitmap) {
-  const cellW = 5.1 * layout.logoScale, cellH = 5 * layout.logoScale;
+  const cellW = layout.cellW, cellH = layout.logoHeight / 19;
   const logoX = attachment(layout, 0).x, logoY = layout.top;
   const side = Math.ceil(Math.max(logoX, layout.width - logoX - bitmap.width * cellW) / cellW);
   const vertical = Math.ceil(Math.max(logoY, layout.height - logoY - bitmap.height * cellH) / cellH);

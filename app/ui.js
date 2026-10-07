@@ -5,7 +5,7 @@ const $ = id => document.getElementById(id);
 let stopDesktopTheme = () => {};
 let catalog, token, previewId, previewWindow, previewWarnings = [], currentFrame = 295;
 let requestVersion = 0, previewAbort, debounce, playing = false, animation, epoch, resumeAfterRefresh = false;
-let busy = false, syncing = false, importing = false, closed = false, currentJob, automaticFilename = 'omarchy-org-en.mp4', previewDimensions;
+let busy = false, syncing = false, importing = false, closed = false, currentJob, automaticFilename = 'mimikkai-ru-en.mp4', previewDimensions;
 
 function showError(message) { $('error').textContent = message; $('error').hidden = !message; }
 function showWarnings(messages) {
@@ -41,7 +41,7 @@ function controls() {
   disableControls('#play, #restart, #scrubber, [data-frame]', playbackUnavailable());
 }
 function selections() {
-  return { theme: $('theme').value, animation: $('animation').value, background: $('background').value, language: $('language').value, tld: $('tld').value, duration: $('duration').value, width: $('width').value, height: $('height').value };
+  return { theme: $('theme').value, animation: $('animation').value, background: $('background').value, language: $('language').value, tld: $('tld').value, tagline: $('tagline').value, duration: $('duration').value, width: $('width').value, height: $('height').value };
 }
 function drawPalette(theme) {
   $('palette').replaceChildren();
@@ -54,9 +54,7 @@ function drawPalette(theme) {
 }
 function paletteAndCopy() {
   const theme = catalog.themes.find(t => t.id === $('theme').value);
-  const locale = catalog.languages.find(l => l.id === $('language').value);
   drawPalette(theme);
-  $('tagline-copy').textContent = locale?.tagline ?? ''; $('tagline-copy').dir = locale?.direction ?? 'ltr';
 }
 function themeOption(t) {
   const origin = { campaign: ' · Campaign', custom: ' · Custom' }[t.origin] ?? '';
@@ -150,7 +148,7 @@ function beginPreview() {
 function mountPreview(data) {
   previewWarnings = data.warnings; showWarnings(previewWarnings);
   $('canvas-size').textContent = `${data.options.width} × ${data.options.height}`;
-  automaticFilename = `omarchy-${data.options.tld.slice(1).toLowerCase().replaceAll('.', '-')}-${data.options.language.toLowerCase()}.mp4`;
+  automaticFilename = `mimikkai-${data.options.tld.slice(1).toLowerCase().replaceAll('.', '-')}-${data.options.language.toLowerCase()}.mp4`;
   if ($('autoname').checked) $('filename').value = automaticFilename;
   const iframe = document.createElement('iframe'); iframe.title = 'Animated billboard preview'; iframe.tabIndex = -1; iframe.src = data.url;
   previewDimensions = data.options;

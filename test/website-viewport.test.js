@@ -4,13 +4,15 @@ import { websiteViewport, viewportBounds } from '../web/website-viewport.js';
 
 const bitmap = { width: 81, height: 19 };
 function layout(width, height, scale, top) {
-  return { width, height, logoScale: scale, top, baseWidth: 413.1 * scale, tailWidth: 150 * scale };
+  const baseWidth = 413.1 * scale;
+  return { width, height, logoScale: scale, top, baseWidth, tailWidth: 150 * scale,
+    cellW: baseWidth / 81, logoHeight: baseWidth * (83.98 / 413.1) };
 }
 test('website effect viewports cover wide, tall and off-center canvases without scaling cells', () => {
   for (const value of [layout(900, 240, 1.3, 27), layout(1920, 1080, 2.8, 342),
     layout(360, 640, .52, 283), layout(640, 640, .9, 240), layout(2400, 240, 1.3, 27)]) {
     const viewport = websiteViewport(value, bitmap);
-    assert.equal(viewport.cellW, 5.1 * value.logoScale); assert.equal(viewport.cellH, 5 * value.logoScale);
+    assert.equal(viewport.cellW, value.cellW); assert.equal(viewport.cellH, value.logoHeight / 19);
     assert.ok(viewport.columns > 93 || viewport.rows > 27);
     // The pinned runtime's centered, unpadded bitmap anchor. Browser tests also
     // verify actual measured offsets and occupied pixels rather than this model.
