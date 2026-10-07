@@ -49,9 +49,9 @@ for (const [animation, theme, language, tld, width, height] of cases) {
     } else {
       assert.equal(renderer.layout.fixedGroundLayer, true);
       assert.equal(renderer.layout.nativeLaserTailClock, true);
-      assert.equal(renderer.layout.sparkMetadata.piles.lastVisibleFrame, 168);
+      assert.equal(renderer.layout.sparkMetadata.piles.lastVisibleFrame, 153);
       const sparks = renderer.layout.sparkMetadata;
-      assert.equal(sparks.groundEventCount, 629);
+      assert.equal(sparks.groundEventCount, 977);
       assert.ok(sparks.piles.landings <= sparks.groundEventCount);
       assert.ok(sparks.groundEvents.every(e => e.extendedFrames === e.nativeFrames * 4));
     }

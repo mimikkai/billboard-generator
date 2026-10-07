@@ -23,10 +23,17 @@
     },
     {
       "file": "assets/runtime/logo.txt",
-      "sha256": "135ab5789df5622e1bcd2c58793ce76ab2cf34c1dfdd14f2e61913f07b5a0d22",
+      "sha256": "2351f36e8a70ac56c3ccb2a99c47ce87d9e880a2ac2daf4245627289fb0a1549",
       "modified": true,
       "rights": "Derived from MimikkAi brand assets supplied by the brand owner.",
-      "modification": "Replaced the Omarchy ASCII wordmark with an 81×10 decomposition of the MimikkAi logo, preserving grid dimensions."
+      "modification": "Replaced the Omarchy ASCII wordmark with an 81\u00d719 high-resolution decomposition of the MimikkAi logo, preserving grid width."
+    },
+    {
+      "file": "assets/runtime/logo-text.txt",
+      "sha256": "61ae522f40ac7128ddeb1ccce93147d1a0199350052f973b522585f89a90587c",
+      "modified": true,
+      "rights": "Derived from MimikkAi brand assets supplied by the brand owner.",
+      "modification": "Compact text-only decomposition of the MimikkAi logo, 19 rows, widened inter-letter spacing 81→75 columns; letter glyphs preserved pixel-identical."
     },
     {
       "file": "assets/official-wordmark.svg",

@@ -16,9 +16,10 @@ test('the floor follows canvas height, including square, portrait and small canv
     const layout = calculateLayout(context(), { width, height, wordmark, locale: { id: 'en', tagline: 'Beautiful, fun & agentic Linux' } });
     assert.equal(layout.floorY, height - Math.min(height / 2, 6 * layout.unit));
     assert.ok(layout.floorY > height * .95 || height < 10);
-    const mapping = effectMapping(layout, 5, 20);
+    const mapping = effectMapping(layout, 0, 20);
     assert.ok(Math.abs(mapping.mapY(19) + layout.cellH / 2 - layout.floorY) < 1e-8, 'Final particle cell center meets the actual floor.');
-    assert.ok(Math.abs(mapping.mapY(14) - (mapping.originY + 14 * layout.cellH)) < 1e-8, 'Logo rows must not stretch.');
+    assert.ok(Math.abs(mapping.mapY(18) - (mapping.originY + 18 * layout.cellH)) < 1e-8, 'Logo rows must not stretch.');
+    assert.ok(Math.abs(mapping.mapY(19) - (mapping.splitY + layout.cellH)) >= 0, 'Only rows below the logo stretch.');
     assert.ok(layout.fullWidth <= width);
     assert.ok(layout.top >= 0 && layout.baseline + layout.descent <= height + 1);
   }

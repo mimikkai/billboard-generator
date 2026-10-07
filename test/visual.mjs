@@ -32,9 +32,9 @@ for (const [theme, language, tld, width, height] of cases) {
     assert.ok(layout.fullWidth <= width - 2 * layout.padding + .01);
     assert.ok(layout.floorY >= layout.lines.at(-1).y + layout.descent + 8 * layout.unit, 'Floor must remain below the tagline.');
     assert.equal(layout.floorY, height - Math.min(height / 2, 6 * layout.unit), 'Floor must track the bottom edge, not the composition.');
-    assert.equal(layout.padX, 21); assert.equal(layout.padTop, 5);
+    assert.equal(layout.padX, 21); assert.equal(layout.padTop, 0);
     assert.ok(layout.sparkMetadata.differentAirborneFrames >= 100);
-    assert.equal(layout.sparkMetadata.piles.lastVisibleFrame, 161);
+    assert.equal(layout.sparkMetadata.piles.lastVisibleFrame, 153);
     const hashes = {};
     for (const index of frames) {
       const bytes = await renderer.frame(index);

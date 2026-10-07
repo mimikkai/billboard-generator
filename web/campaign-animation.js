@@ -13,11 +13,15 @@ function removeBlackBackground(nativeCtx, native) {
   nativeCtx.putImageData(pixels, 0, 0);
 }
 export async function createCampaignAnimation(config, layout, artwork, ctx) {
-  const { width, height, theme } = config, { cellW, cellH } = layout;
+  const { width, height, theme } = config, { cellW } = layout;
+  // The native effect grid dedicates 19 rows to the raster wordmark, so its
+  // vertical cell must be logoHeight / 19 for settled cells to align with the
+  // artwork; layout.cellH (logoHeight / 9.5) only sizes intro-scaled artwork.
+  const effCellH = layout.logoHeight / 19;
   const sim = await createSimulation(fetch, config.timeline), { columns, rows, padX, padTop, final, targets } = sim;
   const effectX = attachment(layout, 0).x - padX * cellW;
-  const { originY: effectY, splitRow, mapY } = effectMapping(layout, padTop, rows);
-  const sparks = createIndependentSparks(sim.primary.frames, sim.secondary.frames, columns, rows, cellW, cellH, effectX, effectY,
+  const { originY: effectY, splitRow, mapY } = effectMapping(layout, padTop, rows, effCellH);
+  const sparks = createIndependentSparks(sim.primary.frames, sim.secondary.frames, columns, rows, cellW, effCellH, effectX, effectY,
     { width, height, scale: layout.logoHeight / (144 * layout.unit), mapY, floorY: layout.floorY });
   const native = document.createElement('canvas'); native.width = columns * 10; native.height = rows * 20;
   const nativeCtx = native.getContext('2d', { willReadFrequently: true });
@@ -35,7 +39,7 @@ export async function createCampaignAnimation(config, layout, artwork, ctx) {
     for (let i = 0; i < targets.length; i++) {
       if (!settled(f, i)) continue;
       const col = i % columns, row = Math.floor(i / columns);
-      const box = mappedBox(mapping, effectX + col * cellW, effectY + row * cellH, cellW, cellH);
+      const box = mappedBox(mapping, effectX + col * cellW, effectY + row * effCellH, cellW, effCellH);
       ctx.save(); ctx.beginPath(); ctx.rect(box.x, box.y, box.width, box.height); ctx.clip(); ctx.fillStyle = theme.background;
       ctx.fillRect(box.x, box.y, box.width, box.height); ctx.drawImage(base, pose.x, pose.y); ctx.restore();
     }
@@ -46,11 +50,11 @@ export async function createCampaignAnimation(config, layout, artwork, ctx) {
     removeBlackBackground(nativeCtx, native);
     ctx.save(); effectShadow(ctx); ctx.imageSmoothingEnabled = false;
     drawMappedImage(ctx, native, { x: 0, y: 0, width: native.width, height: splitRow * 20 },
-      { x: effectX, y: effectY, width: columns * cellW, height: splitRow * cellH }, mapping);
+      { x: effectX, y: effectY, width: columns * cellW, height: splitRow * effCellH }, mapping);
     // Apply the existing floor placement before fitting the intro margins.
     for (let row = splitRow; row < rows; row++) {
       drawMappedImage(ctx, native, { x: 0, y: row * 20, width: native.width, height: 20 },
-        { x: effectX, y: mapY(row), width: columns * cellW, height: cellH }, mapping);
+        { x: effectX, y: mapY(row), width: columns * cellW, height: effCellH }, mapping);
     }
     ctx.restore(); replaceSettledCells(f, pose, mapping);
   }

@@ -41,17 +41,17 @@ test('centered expansion is integer-pixel, monotonic, fixed-size and bounded', (
 
 test('native reference simulation and irregular pile regression', async () => {
   const sim = await createSimulation(async path => new Response(await readFile(new URL('..' + path, import.meta.url))));
-  assert.equal(sim.padX, 21); assert.equal(sim.padTop, 5);
-  const baseWidth = 413.1 / 561 * 840, cellW = baseWidth / 81, cellH = 144 / 9.5;
+  assert.equal(sim.padX, 21); assert.equal(sim.padTop, 0);
+  const baseWidth = 413.1 / 561 * 840, cellW = baseWidth / 81, cellH = 144 / 19;
   const originX = Math.round((900 - baseWidth) / 2) - sim.padX * cellW;
   const sparks = createIndependentSparks(sim.primary.frames, sim.secondary.frames, 121, 20, cellW, cellH, originX, 22 - cellH / 2 - sim.padTop * cellH, { width: 900, height: 240 });
   const m = sparks.metadata;
   assert.ok(m.differentAirborneFrames >= 100);
   assert.ok(m.groundEvents.every(e => e.extendedFrames === e.nativeFrames * 4));
-  assert.equal(m.piles.landings, 629);
-  assert.equal(m.piles.stackedLandings, 524);
-  assert.equal(m.piles.lastVisibleFrame, 168);
-  assert.ok(Math.abs(m.piles.peakStackRise - 26.11) < .15);
+  assert.equal(m.piles.landings, 972);
+  assert.equal(m.piles.stackedLandings, 838);
+  assert.equal(m.piles.lastVisibleFrame, 153);
+  assert.ok(Math.abs(m.piles.peakStackRise - 33.34) < .15);
   assert.deepEqual(m.piles.settleTickFrames, [2, 5]);
 });
 

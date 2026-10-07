@@ -6,12 +6,18 @@ export function attachment(layout, time) {
 
 // Map particle positions to the real canvas floor, not the bottom of the logo group.
 // Glyph size stays unchanged, even when the distance to the floor increases.
-export function effectMapping(layout, padTop, rows) {
-  const originY = layout.top - (padTop + .5) * layout.cellH;
-  const splitRow = padTop + 10, splitY = originY + splitRow * layout.cellH;
+// cellH is the effect grid's own vertical cell size (callers pass logoHeight /
+// logoRows when the grid rows must match the raster wordmark); layout.cellH
+// still divides the wordmark by the historical 9.5-row raster and only fits
+// intro artwork sizing, so it stays the default here.
+export function effectMapping(layout, padTop, rows, cellH = layout.cellH) {
+  const originY = layout.top - (padTop + .5) * cellH;
+  // The settled logo now spans 19 rows (padTop .. padTop + 18), so the untouched
+  // 1:1 region must reach at least the last logo row; below it rows stretch to the floor.
+  const splitRow = padTop + 19, splitY = originY + splitRow * cellH;
   const lowerSpacing = (layout.floorY - splitY) / (rows - .5 - splitRow);
-  const centerY = row => row <= splitRow ? originY + row * layout.cellH : splitY + (row - splitRow) * lowerSpacing;
-  return { originY, splitRow, splitY, mapY: row => centerY(row + .5) - layout.cellH / 2 };
+  const centerY = row => row <= splitRow ? originY + row * cellH : splitY + (row - splitRow) * lowerSpacing;
+  return { originY, splitRow, splitY, mapY: row => centerY(row + .5) - cellH / 2 };
 }
 
 // Center on the font's capital body, not descenders elsewhere in the line.

@@ -1,7 +1,7 @@
 import { a as loadRuntime } from '../assets/runtime/assets/playback.js';
 import { videoTimeline, introSamples } from './timeline.js';
 
-const columns = 121, rows = 20, logoColumns = 81, logoRows = 10;
+const columns = 121, rows = 20, logoColumns = 81, logoRows = 19;
 async function asset(fetchSource, path, message) {
   const response = await fetchSource(path);
   if (!response.ok) throw Error(message);
